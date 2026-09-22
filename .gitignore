@@ -1,0 +1,88 @@
+﻿# ============================================================
+# WheatBreeding Intelligence Platform
+# Git Ignore Rules
+# ============================================================
+
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+.npm/
+*.tsbuildinfo
+
+# Build / coverage
+coverage/
+htmlcov/
+*.log
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Research data
+data/raw/
+data/intermediate/
+data/processed/
+
+# Large scientific files
+*.vcf
+*.vcf.gz
+*.bam
+*.cram
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bed
+*.bim
+*.fam
+*.bed.gz
+*.h5
+*.hdf5
+*.parquet
+
+# Machine-learning artifacts
+models/
+checkpoints/
+artifacts/
+
+# Generated reports
+reports/generated/
+
