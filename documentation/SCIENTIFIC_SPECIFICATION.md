@@ -34,7 +34,67 @@ The project may integrate:
 
 A Dataset is a registered scientific data asset that belongs to a WheatBI project. It represents a known data source or study resource in the platform but is intentionally not the same as a physical uploaded file or a versioned dataset artifact.
 
-DatasetVersion will be introduced later so scientific datasets can retain reproducible lineage and version history without forcing versioning into the initial Dataset entity.
+A Dataset may have many DatasetVersion records over time. Each DatasetVersion represents an immutable, reproducible state of a Dataset at a particular point in time. The relationship is one-to-many from Dataset to DatasetVersion, with each DatasetVersion belonging to exactly one Dataset.
+
+DatasetVersion exists to establish scientific provenance and reproducibility. For example, a genotype dataset may begin as an original release and later be replaced by a materially corrected release with changes to sample identifiers. Each materially distinct underlying data state should be represented as a distinct DatasetVersion so that analyses can be linked to the exact data state used.
+
+Version numbering is unique within a Dataset, not globally. The database rule will eventually enforce UNIQUE(dataset_id, version_number), so the following patterns are valid: Dataset A version 1 and version 2; Dataset B version 1 and version 2. The pattern Dataset A version 2 and Dataset A version 2 is invalid.
+
+The initial DatasetVersion data model is defined by the following fields:
+
+- id: UUID unique identifier
+- dataset_id: foreign key identifying the parent Dataset
+- version_number: integer identifying the version within its Dataset
+- description: description of what the version represents or what changed
+- file_name: name of the associated data file
+- file_format: file format such as CSV, TSV, VCF, XLSX, etc.
+- file_size_bytes: size of the associated physical file in bytes
+- checksum_sha256: SHA-256 checksum identifying the exact file contents
+- row_count: number of records/rows where applicable
+- column_count: number of columns where applicable
+- status: initial lifecycle status
+- created_at: creation timestamp
+- updated_at: last metadata update timestamp
+
+The initial DatasetVersion status values are:
+
+- REGISTERED
+- PROCESSING
+- READY
+- FAILED
+- ARCHIVED
+
+These are aligned with the initial Dataset lifecycle and are not intended to represent broader workflow semantics beyond the foundational metadata model.
+
+Scientific integrity requires that a DatasetVersion represent a reproducible state. Once a version is established as an operational or ready scientific artifact, its core identity must not be silently replaced by different underlying data. If the data change materially, a new DatasetVersion must be created instead of overwriting the prior version. A version that previously had checksum ABC... must not silently become checksum XYZ... without the creation of a new version entry.
+
+SHA-256 is included so WheatBI can later establish the exact physical artifact associated with a DatasetVersion. This supports provenance and file identity/integrity checks. It does not prove scientific correctness, biological validity, or overall data quality. Those remain separate scientific assessments.
+
+The initial DatasetVersion architecture intentionally excludes file_path or provider-specific storage fields. A local filesystem path, S3 bucket field, Azure Blob field, or any other cloud-provider-specific storage abstraction is intentionally not included at this stage. Storage abstraction will be designed separately in a later phase.
+
+DatasetVersion is not yet a system for upload UI, data ingest processing, cloud storage, genomic parsing, phenotypic parsing, environmental parsing, automated quality control, machine learning, authentication, authorization, permissions, collaboration, or advanced validation. At this stage, it is a provenance and data-model foundation for tracking exact data states over time.
+
+The intended future scientific provenance chain is:
+
+Project
+↓
+Dataset
+↓
+DatasetVersion
+↓
+Quality Control
+↓
+Processed Dataset
+↓
+Analysis
+↓
+Model
+↓
+Prediction
+↓
+Breeding Decision Support
+
+This chain represents intended future architecture, not currently implemented functionality.
 
 Initial dataset types are:
 

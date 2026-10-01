@@ -46,6 +46,16 @@ The initial system should eventually support:
 14. Candidate-line analysis
 15. Reproducible reporting
 
+## DatasetVersion and Provenance Architecture
+
+DatasetVersion supports the platform’s long-term scientific requirements for reproducibility, traceability, provenance, and version history. In the intended architecture, a Dataset can contain multiple DatasetVersion entries, each representing a distinct, time-stamped state of the underlying scientific data. This creates a clear chain from a registered Dataset to the exact data state used for downstream analyses.
+
+This is intended to support reliable linkage between analyses and the exact data state used, including downstream quality control, processed datasets, modelling, and breeding decision support. The model is therefore an architectural foundation for provenance and reproducibility, even though the operational capabilities are not yet implemented in the current product scope.
+
+DatasetVersion is not currently a full operational system for upload processing, storage management, automated validation, or machine-learning workflows. Instead, it formalizes the data-model expectation that analyses can eventually be connected to a specific DatasetVersion, with an associated checksum for identity/integrity, and a clear record of what changed across versions.
+
+The design must remain scientifically precise: version history and SHA-256 checks support data identity, provenance, and integrity, but they do not guarantee biological validity, data quality, or scientific interpretation. Those remain separate scientific assessments that must be performed by researchers and analysis workflows.
+
 ## Intended Users
 
 Initial users:
