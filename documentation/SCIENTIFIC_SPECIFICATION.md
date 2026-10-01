@@ -30,6 +30,28 @@ The project may integrate:
 - Management information
 - Historical breeding information where available
 
+## Dataset Domain
+
+A Dataset is a registered scientific data asset that belongs to a WheatBI project. It represents a known data source or study resource in the platform but is intentionally not the same as a physical uploaded file or a versioned dataset artifact.
+
+DatasetVersion will be introduced later so scientific datasets can retain reproducible lineage and version history without forcing versioning into the initial Dataset entity.
+
+Initial dataset types are:
+
+- GENOMIC
+- PHENOTYPIC
+- ENVIRONMENTAL
+- EXPERIMENTAL
+- DERIVED
+
+Initial dataset statuses are:
+
+- REGISTERED
+- PROCESSING
+- READY
+- FAILED
+- ARCHIVED
+
 ## Genotype × Environment
 
 Genotype × environment interaction is an important scientific component where sufficient data are available.
