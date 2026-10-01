@@ -1,0 +1,16 @@
+﻿services:
+  postgres:
+    image: postgres:18
+    container_name: wheatbi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wheatbi
+      POSTGRES_USER: wheatbi
+      POSTGRES_PASSWORD: wheatbi_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - wheatbi_postgres_data:/var/lib/postgresql
+
+volumes:
+  wheatbi_postgres_data:
