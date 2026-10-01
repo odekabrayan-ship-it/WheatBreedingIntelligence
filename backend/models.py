@@ -25,6 +25,14 @@ class DatasetStatus(str, Enum):
     ARCHIVED = "ARCHIVED"
 
 
+class DatasetVersionStatus(str, Enum):
+    REGISTERED = "REGISTERED"
+    PROCESSING = "PROCESSING"
+    READY = "READY"
+    FAILED = "FAILED"
+    ARCHIVED = "ARCHIVED"
+
+
 class Project(Base):
     __tablename__ = "projects"
 
@@ -124,4 +132,84 @@ class Dataset(Base):
 
     project: Mapped[Project] = relationship(
         back_populates="datasets",
+    )
+
+    versions: Mapped[list["DatasetVersion"]] = relationship(
+        back_populates="dataset",
+    )
+
+
+class DatasetVersion(Base):
+    __tablename__ = "dataset_versions"
+
+    id: Mapped[UUID] = mapped_column(
+        PostgreSQLUUID(as_uuid=True),
+        primary_key=True,
+        default=uuid4,
+    )
+
+    dataset_id: Mapped[UUID] = mapped_column(
+        PostgreSQLUUID(as_uuid=True),
+        ForeignKey("datasets.id"),
+        nullable=False,
+        index=True,
+    )
+
+    version_number: Mapped[int] = mapped_column(
+        nullable=False,
+    )
+
+    description: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    file_name: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    file_format: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
+    file_size_bytes: Mapped[int | None] = mapped_column(
+        nullable=True,
+    )
+
+    checksum_sha256: Mapped[str | None] = mapped_column(
+        String(64),
+        nullable=True,
+    )
+
+    row_count: Mapped[int | None] = mapped_column(
+        nullable=True,
+    )
+
+    column_count: Mapped[int | None] = mapped_column(
+        nullable=True,
+    )
+
+    status: Mapped[DatasetVersionStatus] = mapped_column(
+        SAEnum(DatasetVersionStatus, name="dataset_version_status", create_type=True),
+        nullable=False,
+        default=DatasetVersionStatus.REGISTERED,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    dataset: Mapped[Dataset] = relationship(
+        back_populates="versions",
     )
